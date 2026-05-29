@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import type { OriginFunction } from '@fastify/cors';
 import websocketPlugin from '@fastify/websocket';
 import type { WebSocket } from '@fastify/websocket';
 import type { WSMessage, SystemHealth } from '@fleetpulse/types';
@@ -55,14 +56,16 @@ async function main(): Promise<void> {
     .split(',')
     .map((s) => s.trim());
 
+  const originFn: OriginFunction = (origin, cb) => {
+    if (!origin || allowedOrigins.some((o) => origin === o || o === '*')) {
+      cb(null, true);
+    } else {
+      cb(new Error(`Origin ${origin} not allowed`), false);
+    }
+  };
+
   await fastify.register(cors, {
-    origin: (origin, cb) => {
-      if (!origin || allowedOrigins.some((o) => origin === o || o === '*')) {
-        cb(null, true);
-      } else {
-        cb(new Error(`Origin ${origin} not allowed`), false);
-      }
-    },
+    origin: originFn,
     methods: ['GET', 'POST', 'OPTIONS'],
   });
 

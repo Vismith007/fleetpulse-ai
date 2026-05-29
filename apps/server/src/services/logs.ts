@@ -25,10 +25,10 @@ const TEMPLATES: LogTemplate[] = [
   { level: 'warn',  message: (d) => `Memory usage elevated: ${d.memoryUsage.toFixed(1)}% — GC triggered`,                              condition: (d) => d.memoryUsage > 75,             weight: 6  },
   { level: 'info',  message: (d) => `OTA check: firmware ${d.firmwareVersion} is current`,                                             condition: () => Math.random() < 0.1,             weight: 3  },
   { level: 'debug', message: () => `Config sync completed. Hash=0x${Math.floor(Math.random() * 0xffffff).toString(16).toUpperCase()}`,condition: () => Math.random() < 0.15,            weight: 5  },
-  { level: 'info',  message: (d) => `Device reconnected after ${Math.round(Math.random() * 30 + 5)}s offline period`,                  condition: (d) => d.status === 'online' && Math.random() < 0.05, weight: 2 },
+  { level: 'info',  message: (_d) => `Device reconnected after ${Math.round(Math.random() * 30 + 5)}s offline period`,                 condition: (d) => d.status === 'online' && Math.random() < 0.05, weight: 2 },
   { level: 'error', message: () => `Authentication token expired. Refreshing...`,                                                      condition: () => Math.random() < 0.02,            weight: 1  },
-  { level: 'warn',  message: (d) => `I2C bus timeout on sensor channel 2. Retrying...`,                                                condition: (d) => d.type === 'sensor' && Math.random() < 0.08, weight: 3 },
-  { level: 'info',  message: (d) => `Actuator command executed: state=ACTIVE duration=2500ms`,                                         condition: (d) => d.type === 'actuator',          weight: 5  },
+  { level: 'warn',  message: (_d) => `I2C bus timeout on sensor channel 2. Retrying...`,                                               condition: (d) => d.type === 'sensor' && Math.random() < 0.08, weight: 3 },
+  { level: 'info',  message: (_d) => `Actuator command executed: state=ACTIVE duration=2500ms`,                                        condition: (d) => d.type === 'actuator',          weight: 5  },
 ];
 
 function weightedPick(device: Device): LogTemplate | null {
